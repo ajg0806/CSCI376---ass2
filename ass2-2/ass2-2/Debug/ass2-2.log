@@ -1,4 +1,8 @@
 ﻿  main.cpp
-c:\users\grabs\google drive\2018\spring\csci376\assignments\ass2\ass2-2\ass2-2\main.cpp(97): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\grabs\google drive\2018\spring\csci376\assignments\ass2\ass2-2\ass2-2\main.cpp(114): warning C4101: 'array2': unreferenced local variable
+c:\users\grabs\google drive\2018\spring\csci376\assignments\ass2\ass2-2\ass2-2\main.cpp(40): warning C4018: '<': signed/unsigned mismatch
+c:\users\grabs\google drive\2018\spring\csci376\assignments\ass2\ass2-2\ass2-2\main.cpp(49): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\grabs\google drive\2018\spring\csci376\assignments\ass2\ass2-2\ass2-2\main.cpp(68): warning C4018: '<': signed/unsigned mismatch
+c:\users\grabs\google drive\2018\spring\csci376\assignments\ass2\ass2-2\ass2-2\main.cpp(78): warning C4018: '<': signed/unsigned mismatch
+c:\users\grabs\google drive\2018\spring\csci376\assignments\ass2\ass2-2\ass2-2\main.cpp(82): warning C4018: '<': signed/unsigned mismatch
+c:\users\grabs\google drive\2018\spring\csci376\assignments\ass2\ass2-2\ass2-2\main.cpp(86): warning C4018: '<': signed/unsigned mismatch
   ass2-2.vcxproj -> C:\Users\grabs\Google Drive\2018\Spring\CSCI376\Assignments\ass2\ass2-2\Debug\ass2-2.exe
