@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
+#include <time.h>
 using namespace std;
 
 #ifdef MAC
@@ -92,6 +93,17 @@ cl_program build_program(cl_context ctx, cl_device_id dev, const char* filename)
    return program;
 }
 
+void loadArrays(int* array1, int* array2) {
+	srand(time(NULL));
+	for (int i = 0; i < 8; i++) {
+		array1[i] = rand() % 10;
+		array2[i] = i + 1;
+	}
+	for (int j = 0; j < 8; j++)
+		array2[j+8] = -8 + j;
+
+}
+
 int main() {
 
    /* Host/device data structures */
@@ -103,16 +115,12 @@ int main() {
    cl_int i, err;
 
    /* Data and buffers */
-   int shuffle1[8];
-   int shuffle2[8];
-   cl_mem shuffle1_buffer1, shuffle1_buffer2;
+   int array1[8];
+   int array2[16];
+   int output[8];
+   cl_mem array1_buffer, array2_buffer, output_buffer;
 
-   for (int i = 0; i < 8; i++)
-	   shuffle1[i] = i*i;
-   
-   for (int j = 0; j < 8; j++)
-	   cout << shuffle1[j] << ' ';
-   cout << endl;
+   loadArrays(array1, array2);
 
    /* Create a context */
    device = create_device();
@@ -131,24 +139,27 @@ int main() {
    };
 
    /* Create a read-only buffer to hold the input data */
-   shuffle1_buffer1 = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-	   sizeof(shuffle1), shuffle1, &err);
+   array1_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+	   sizeof(array1), array1, &err);
    if (err < 0) {
 	   perror("Couldn't create a buffer");
 	   exit(1);
    };
+   array2_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+	   sizeof(array2), array2, &err);
    /* Create a write-only buffer to hold the output data */
-   shuffle1_buffer2 = clCreateBuffer(context, CL_MEM_WRITE_ONLY, 
-         sizeof(shuffle2), NULL, NULL);
+   output_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY,
+         sizeof(output), NULL, NULL);
 
 
    /* Create kernel argument */
-   err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &shuffle1_buffer1);
+   err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &array1_buffer);
    if (err < 0) {
 	   perror("Couldn't set a kernel argument");
 	   exit(1);
    };
-   clSetKernelArg(kernel, 1, sizeof(cl_mem), &shuffle1_buffer2);
+   clSetKernelArg(kernel, 1, sizeof(cl_mem), &array2_buffer);
+   clSetKernelArg(kernel, 2, sizeof(cl_mem), &output_buffer);
 
    /* Create a command queue */
    queue = clCreateCommandQueue(context, device, 0, &err);
@@ -165,25 +176,25 @@ int main() {
    }
 
    /* Read and print the result */
-   err = clEnqueueReadBuffer(queue, shuffle1_buffer2, CL_TRUE, 0, 
-      sizeof(shuffle2), &shuffle2, 0, NULL, NULL);
+   err = clEnqueueReadBuffer(queue, output_buffer, CL_TRUE, 0,
+      sizeof(output), &output, 0, NULL, NULL);
    if(err < 0) {
       perror("Couldn't read the buffer");
       exit(1);   
    }
    
-   printf("Shuffle1: ");
+   printf("Output: ");
    for (i = 0; i < 7; i++) {
-	   cout << shuffle2[i] << ", ";
+	   cout << output[i] << ", ";
    }
-   cout << shuffle2[7] << endl;
+   cout << output[7] << endl;
 
    /* Wait for a key press before exiting */
    getchar();
 
    /* Deallocate resources */
-   clReleaseMemObject(shuffle1_buffer1);
-   clReleaseMemObject(shuffle1_buffer2);
+   clReleaseMemObject(array1_buffer);
+   clReleaseMemObject(output_buffer);
    clReleaseKernel(kernel);
    clReleaseCommandQueue(queue);
    clReleaseProgram(program);
