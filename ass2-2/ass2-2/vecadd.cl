@@ -3,6 +3,7 @@ __kernel void vecadd(__global char *a,
 					 __global char *c) {
 
    int i = get_global_id(0);
+
    int num = a[i] + *b;
 	if(num > 'Z')
 		num -= 26;

@@ -166,19 +166,18 @@ int main() {
    cl_kernel kernel;
    cl_int i, j, err;
 
-
+   int offset = 3;
 
    vector<char> text = getPlaintext();
-   int size = text.size();
    text = formatPlainText(text);
-
+   int size = text.size();
    for (int i = 0; i < text.size(); i++)
 	   cout << text[i];
    cout << endl;
    cout << "Press ENTER to see encryption." << endl;
    getchar();
    cout << "\n\n";
-   text = shift_text(text, 3);
+   text = shift_text(text, offset);
    for (int i = 0; i < text.size(); i++)
 	   cout << text[i];
    cout << endl;
@@ -186,7 +185,7 @@ int main() {
    getchar();
    cout << "\n\n";
    
-   text = shift_text(text, 3);
+   text = shift_text(text, offset);
    for (int i = 0; i < text.size(); i++)
 	   cout << text[i];
    cout << endl;
@@ -195,13 +194,12 @@ int main() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
    // SECTION 1
    // Declare data and buffers
-   char *array_a = new char[ARRAY_LENGTH];
-   int offset = 3;
-   char *array_result = new char[ARRAY_LENGTH];			
+   char *array_a = new char[size];
+   char *array_result = new char[size];
    cl_mem buffer_a;				// buffer objects
    cl_mem buffer_b;				
    cl_mem buffer_c;				// c = a + b
-   size_t num_of_work_items = ARRAY_LENGTH;
+   size_t num_of_work_items = size;
    cl_bool result_check = CL_TRUE;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,17 +224,18 @@ int main() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
    // SECTION 2
    // Initialise arrays
-   for(i=0; i<ARRAY_LENGTH; i++) {
-      array_a[i] = (char)(i+'A');					// Set the values in the array from 2 to 1001
+   for(i=0; i < size; i++) {
+      array_a[i] = text[i];					// Set the values in the array from 2 to 1001
+	  cout << text[i];
    }
-   memset(array_result, '0', sizeof(char)*ARRAY_LENGTH);	// Set all values in the array to 0
+   memset(array_result, '0', sizeof(char)*size);	// Set all values in the array to 0
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
    // SECTION 3
    // Create buffers
    // Buffers for the input, read-only
    buffer_a = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, 
-	   sizeof(char)*ARRAY_LENGTH, array_a, &err);
+	   sizeof(char)*size, array_a, &err);
    if(err < 0)
       handle_error("Couldn't create buffer a");
 
@@ -247,7 +246,7 @@ int main() {
 
    // Buffer for the result
    buffer_c = clCreateBuffer(context, CL_MEM_WRITE_ONLY, 
-	   sizeof(char)*ARRAY_LENGTH, NULL, &err);
+	   sizeof(char)*size, NULL, &err);
    if(err < 0)
       handle_error("Couldn't create result1 buffer");
 
@@ -271,7 +270,7 @@ int main() {
    // SECTION 5
    // Enqueue command to read from buffer c
    err = clEnqueueReadBuffer(queue, buffer_c, CL_TRUE, 
-		 0, sizeof(char)*ARRAY_LENGTH, array_result, 0, NULL, NULL); 
+		 0, sizeof(char)*size, array_result, 0, NULL, NULL);
    if(err < 0)
       handle_error("Couldn't read from buffer result");
 
@@ -280,9 +279,9 @@ int main() {
 
 
    if (result_check) {
-	   printf("Successfully processed %d array elements.\n", ARRAY_LENGTH);
-	   for (int i = 0; i < ARRAY_LENGTH; i++)
-		   cout << array_a[i] << " + " << offset << " = " << array_result[i] << endl;
+	   printf("Successfully processed %d array elements.\n", size);
+	   for (int i = 0; i < size; i++)
+		   cout << array_result[i];
    }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
