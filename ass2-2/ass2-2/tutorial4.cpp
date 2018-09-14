@@ -57,10 +57,21 @@ char shift_character(char c, int offset) {
 	char tmp;
 	if (isupper(c)) {
 		tmp = (char)(c - offset);
+		while (tmp < 'A')
+			tmp = (char)(tmp+26);
+		while (tmp > 'Z')
+			tmp = (char)(tmp - 26);
+
 		return tolower(tmp);
 	}
 
 	tmp = (char)(c + offset);
+
+	while (tmp < 'a')
+		tmp = (char)(tmp + 26);
+	while (tmp > 'z')
+		tmp = (char)(tmp - 26);
+
 	return toupper(tmp);
 
 }
@@ -174,6 +185,7 @@ int main() {
    for (int i = 0; i < text.size(); i++)
 	   cout << text[i];
    cout << endl;
+
    cout << "Press ENTER to see encryption." << endl;
    getchar();
    cout << "\n\n";
@@ -226,7 +238,6 @@ int main() {
    // Initialise arrays
    for(i=0; i < size; i++) {
       array_a[i] = text[i];					// Set the values in the array from 2 to 1001
-	  cout << text[i];
    }
    memset(array_result, '0', sizeof(char)*size);	// Set all values in the array to 0
 
@@ -279,7 +290,6 @@ int main() {
 
 
    if (result_check) {
-	   printf("Successfully processed %d array elements.\n", size);
 	   for (int i = 0; i < size; i++)
 		   cout << array_result[i];
    }
