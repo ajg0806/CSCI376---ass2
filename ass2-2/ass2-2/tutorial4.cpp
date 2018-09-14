@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define PROGRAM_FILE "vecadd.cl"
 #define KERNEL_FUNC "vecadd"
-#define ARRAY_LENGTH 10
 
 #ifdef MAC
 #include <OpenCL/cl.h>
@@ -193,6 +192,9 @@ int main() {
    for (int i = 0; i < text.size(); i++)
 	   cout << text[i];
    cout << endl;
+
+   vector<char> other = text;
+
    cout << "Press ENTER to see decryption." << endl;
    getchar();
    cout << "\n\n";
@@ -208,9 +210,13 @@ int main() {
    // Declare data and buffers
    char *array_a = new char[size];
    char *array_result = new char[size];
+   char *array_d = new char[size];
+   char *array_e = new char[size];
    cl_mem buffer_a;				// buffer objects
    cl_mem buffer_b;				
    cl_mem buffer_c;				// c = a + b
+   cl_mem buffer_d;
+   cl_mem buffer_e;
    size_t num_of_work_items = size;
    cl_bool result_check = CL_TRUE;
 
@@ -236,8 +242,13 @@ int main() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
    // SECTION 2
    // Initialise arrays
+   cout << "Press ENTER to see parallel encryption." << endl;
+   getchar();
+   cout << "\n\n";
+
    for(i=0; i < size; i++) {
       array_a[i] = text[i];					// Set the values in the array from 2 to 1001
+	  array_d[i] = other[i];
    }
    memset(array_result, '0', sizeof(char)*size);	// Set all values in the array to 0
 
@@ -255,11 +266,22 @@ int main() {
    if(err < 0)
       handle_error("Couldn't create buffer b");
 
+
+   buffer_d = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+	   sizeof(char)*size, array_d, &err);
+   if (err < 0)
+	   handle_error("Couldn't create buffer d");
+
    // Buffer for the result
    buffer_c = clCreateBuffer(context, CL_MEM_WRITE_ONLY, 
 	   sizeof(char)*size, NULL, &err);
    if(err < 0)
       handle_error("Couldn't create result1 buffer");
+
+   buffer_e = clCreateBuffer(context, CL_MEM_WRITE_ONLY,
+	   sizeof(char)*size, NULL, &err);
+   if (err < 0)
+	   handle_error("Couldn't create result1 buffer");
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
    // SECTION 4
@@ -268,6 +290,8 @@ int main() {
    err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &buffer_a);
    err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &buffer_b);
    err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &buffer_c);
+   err |= clSetKernelArg(kernel, 3, sizeof(cl_mem), &buffer_d);
+   err |= clSetKernelArg(kernel, 4, sizeof(cl_mem), &buffer_e);
    if(err < 0)
       handle_error("Couldn't set kernel argument");
 
@@ -285,6 +309,12 @@ int main() {
    if(err < 0)
       handle_error("Couldn't read from buffer result");
 
+   err = clEnqueueReadBuffer(queue, buffer_e, CL_TRUE,
+	   0, sizeof(char)*size, array_e, 0, NULL, NULL);
+   if (err < 0)
+	   handle_error("Couldn't read from buffer result");
+
+
    // Check the results
    result_check = CL_TRUE;
 
@@ -292,16 +322,30 @@ int main() {
    if (result_check) {
 	   for (int i = 0; i < size; i++)
 		   cout << array_result[i];
+
+	   cout << endl;
+
+	   cout << "Press ENTER to see parallel decryption." << endl;
+	   cout << "\n\n";
+	   getchar();
+
+	   for (int i = 0; i < size; i++)
+		   cout << array_e[i];
    }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
    /* Wait until a key is pressed before exiting */
    getchar();	
 
    /* Deallocate resources */
+   free(array_a);
+   free(array_d);
+   free(array_e);
+   free(array_result);
    clReleaseMemObject(buffer_a);
    clReleaseMemObject(buffer_b);
    clReleaseMemObject(buffer_c);
+   clReleaseMemObject(buffer_d);
+   clReleaseMemObject(buffer_e);
    clReleaseKernel(kernel);
    clReleaseCommandQueue(queue);
    clReleaseProgram(program);
