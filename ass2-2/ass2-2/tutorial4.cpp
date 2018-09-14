@@ -166,6 +166,73 @@ cl_program build_program(cl_context ctx, cl_device_id dev, const char* filename)
    return program;
 }
 
+char *lookup_generate_01()
+{
+	char *l1 = new char[26];
+
+	l1[0] = 'C';
+	l1[1] = 'I';
+	l1[2] = 'S';
+	l1[3] = 'Q';
+	l1[4] = 'V';
+	l1[5] = 'N';
+	l1[6] = 'F';
+	l1[7] = 'O';
+	l1[8] = 'W';
+	l1[9] = 'A';
+	l1[10] = 'X';
+	l1[11] = 'M';
+	l1[12] = 'T';
+	l1[13] = 'G';
+	l1[14] = 'U';
+	l1[15] = 'H';
+	l1[16] = 'P';
+	l1[17] = 'B';
+	l1[18] = 'K';
+	l1[19] = 'L';
+	l1[20] = 'R';
+	l1[21] = 'E';
+	l1[22] = 'Y';
+	l1[23] = 'D';
+	l1[24] = 'Z';
+	l1[25] = 'J';
+
+	return l1;
+}
+
+char *lookup_generate_02()
+{
+	char *l2 = new char[26];
+	l2[0] = 'j';
+	l2[1] = 'r';
+	l2[2] = 'a';
+	l2[3] = 'x';
+	l2[4] = 'v';
+	l2[5] = 'g';
+	l2[6] = 'n';
+	l2[7] = 'p';
+	l2[8] = 'b';
+	l2[9] = 'z';
+	l2[10] = 's';
+	l2[11] = 't';
+	l2[12] = 'l';
+	l2[13] = 'f';
+	l2[14] = 'h';
+	l2[15] = 'q';
+	l2[16] = 'd';
+	l2[17] = 'u';
+	l2[18] = 'c';
+	l2[19] = 'm';
+	l2[20] = 'o';
+	l2[21] = 'e';
+	l2[22] = 'i';
+	l2[23] = 'k';
+	l2[24] = 'w';
+	l2[25] = 'y';
+
+	return l2;
+}
+
 int main() {
 
    /* OpenCL data structures */
@@ -204,6 +271,8 @@ int main() {
 	   cout << text[i];
    cout << endl;
 
+   char *l1 = lookup_generate_01();
+   char *l2 = lookup_generate_02();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
    // SECTION 1
@@ -212,11 +281,17 @@ int main() {
    char *array_result = new char[size];
    char *array_d = new char[size];
    char *array_e = new char[size];
+   char *array_f = new char[size];
+   char *array_g = new char[size];
    cl_mem buffer_a;				// buffer objects
    cl_mem buffer_b;				
    cl_mem buffer_c;				// c = a + b
    cl_mem buffer_d;
    cl_mem buffer_e;
+   cl_mem buffer_f;
+   cl_mem buffer_g;
+   cl_mem buffer_l1;
+   cl_mem buffer_l2;
    size_t num_of_work_items = size;
    cl_bool result_check = CL_TRUE;
 
@@ -267,6 +342,19 @@ int main() {
       handle_error("Couldn't create buffer b");
 
 
+   buffer_l1 = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+	   sizeof(char)*size, l1, &err);
+   if (err < 0)
+	   handle_error("Couldn't create buffer d");
+
+
+   buffer_l2 = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+	   sizeof(char)*size, l2, &err);
+   if (err < 0)
+	   handle_error("Couldn't create buffer d");
+
+
+
    buffer_d = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
 	   sizeof(char)*size, array_d, &err);
    if (err < 0)
@@ -283,6 +371,16 @@ int main() {
    if (err < 0)
 	   handle_error("Couldn't create result1 buffer");
 
+   buffer_f = clCreateBuffer(context, CL_MEM_WRITE_ONLY,
+	   sizeof(char)*size, NULL, &err);
+   if (err < 0)
+	   handle_error("Couldn't create result1 buffer");
+
+   buffer_g = clCreateBuffer(context, CL_MEM_WRITE_ONLY,
+	   sizeof(char)*size, NULL, &err);
+   if (err < 0)
+	   handle_error("Couldn't create result1 buffer");
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
    // SECTION 4
    // Set buffers as arguments to the kernel
@@ -292,6 +390,10 @@ int main() {
    err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &buffer_c);
    err |= clSetKernelArg(kernel, 3, sizeof(cl_mem), &buffer_d);
    err |= clSetKernelArg(kernel, 4, sizeof(cl_mem), &buffer_e);
+   err |= clSetKernelArg(kernel, 5, sizeof(cl_mem), &buffer_f);
+   err |= clSetKernelArg(kernel, 6, sizeof(cl_mem), &buffer_g);
+   err |= clSetKernelArg(kernel, 7, sizeof(cl_mem), &buffer_l1);
+   err |= clSetKernelArg(kernel, 8, sizeof(cl_mem), &buffer_l2);
    if(err < 0)
       handle_error("Couldn't set kernel argument");
 
@@ -315,6 +417,18 @@ int main() {
 	   handle_error("Couldn't read from buffer result");
 
 
+   err = clEnqueueReadBuffer(queue, buffer_f, CL_TRUE,
+	   0, sizeof(char)*size, array_f, 0, NULL, NULL);
+   if (err < 0)
+	   handle_error("Couldn't read from buffer result");
+
+
+   err = clEnqueueReadBuffer(queue, buffer_g, CL_TRUE,
+	   0, sizeof(char)*size, array_g, 0, NULL, NULL);
+   if (err < 0)
+	   handle_error("Couldn't read from buffer result");
+
+
    // Check the results
    result_check = CL_TRUE;
 
@@ -331,6 +445,25 @@ int main() {
 
 	   for (int i = 0; i < size; i++)
 		   cout << array_e[i];
+	   cout << endl;
+
+	   cout << "Press ENTER to see lookup table encryption." << endl;
+	   cout << "\n\n";
+	   getchar();
+
+	   cout << "\n\n" << endl;
+	   for (int i = 0; i < size; i++)
+		   cout << array_f[i];
+	   cout << endl;
+
+	   cout << "Press ENTER to see lookup table decryption." << endl;
+	   cout << "\n\n";
+	   getchar();
+
+	   cout << "\n\n" << endl;
+	   for (int i = 0; i < size; i++)
+		   cout << array_g[i];
+
    }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
    /* Wait until a key is pressed before exiting */
