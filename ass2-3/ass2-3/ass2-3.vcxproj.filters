@@ -15,12 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="tutorial4.cpp">
+    <ClCompile Include="password_check.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vecadd.cl">
+    <None Include="password_check.cl">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
