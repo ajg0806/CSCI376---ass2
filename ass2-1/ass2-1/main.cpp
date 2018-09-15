@@ -1,6 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define PROGRAM_FILE "kernel.cl"
-#define KERNEL_FUNC "shuffle_test"
+#define KERNEL_FUNC "mask_test"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -183,11 +183,37 @@ int main() {
       exit(1);   
    }
    
-   printf("Output: ");
+   printf("Output:\t\t");
    for (i = 0; i < 7; i++) {
 	   cout << output[i] << ", ";
    }
    cout << output[7] << endl;
+
+
+   //If any value from array1 is over five the first requirement is met
+   bool use_mask1 = false;
+   for (int j = 0; j < 8; j++) {
+	   if (array1[j] > 5)
+		   use_mask1 = true;
+   }
+   cout << "Output check:\t";
+   if (use_mask1) {
+	   for (int i = 0; i < 8; i++) {
+		   if (array1[i] > 5)
+			   cout << array2[i] << ", ";
+		   else
+			   cout << array2[i + 8] << ", ";
+	   }
+	   cout << endl;
+   }
+   //If the first requirement failed the default mask is used
+   else {
+	   for (int k = 0; k < 4; k++)
+		   cout << array2[k] << ", ";
+	   for (int l = 12; l < 16; l++)
+		   cout << array2[l] << ", ";
+	   cout << endl;
+   }
 
    /* Wait for a key press before exiting */
    getchar();

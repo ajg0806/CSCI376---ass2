@@ -1,4 +1,4 @@
-__kernel void vecadd(__global char *a,
+__kernel void shiftcipher(__global char *a,
 					 __global int *b,
 					 __global char *c, __global char *d, __global char *e,  __global char *f,
 					 __global char *g,  __global char *l1, __global char *l2) {

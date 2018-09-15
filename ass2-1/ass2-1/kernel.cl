@@ -1,10 +1,10 @@
-__kernel void shuffle_test(__global *array1, __global *array2, __global int *output) {
+__kernel void mask_test(__global *array1, __global *array2, __global int *output) {
    /* Execute the first example */
 
    int8 v = vload8(0, array1);
    int8 v1 = vload8(0, array2);
    int8 v2 = vload8(1, array2);
-   
+
    //Creates a mask of where v is greater than 5
    int8 mask1 = (int8)(v > 5);
    

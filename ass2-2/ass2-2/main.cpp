@@ -1,6 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
-#define PROGRAM_FILE "vecadd.cl"
-#define KERNEL_FUNC "vecadd"
+#define PROGRAM_FILE "kernel.cl"
+#define KERNEL_FUNC "shiftcipher"
 
 #ifdef MAC
 #include <OpenCL/cl.h>
