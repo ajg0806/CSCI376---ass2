@@ -44,18 +44,6 @@ cl_device_id create_device() {
 	return dev;
 }
 
-
-/*string num_to_string(int num, int size) {
-	int* array = new int[size];
-	int leftover;
-	int m;
-	for (int i = 0; i < size; i++) {
-		m = pow(100, size-(i+1));
-		leftover = num % m;
-
-	}
-}*/
-
 /* Create program from a file and compile it */
 cl_program build_program(cl_context ctx, cl_device_id dev, const char* filename) {
 
@@ -125,9 +113,8 @@ int main() {
 	size_t global_offset[] = { 0, 0 };
 	size_t global_size[] = { 4, 4 };
 	size_t local_size[] = { 2, 2 };
-	int test[24];
-	int test2[24];
-	cl_mem test_buffer, test_buffer2;
+	int test[8];
+	cl_mem test_buffer;
 
 	/* Create a device and context */
 	device = create_device();
@@ -156,26 +143,8 @@ int main() {
 		exit(1);
 	};
 
-
-	/* Create a write-only buffer to hold the output data */
-	test_buffer2 = clCreateBuffer(context, CL_MEM_WRITE_ONLY,
-		sizeof(test2), NULL, &err);
-	if (err < 0) {
-		perror("Couldn't create a buffer");
-		getchar();
-		exit(1);
-	};
-
 	/* Create kernel argument */
 	err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &test_buffer);
-	if (err < 0) {
-		perror("Couldn't set a kernel argument");
-		getchar();
-		exit(1);
-	};
-
-	/* Create kernel argument */
-	err = clSetKernelArg(kernel, 1, sizeof(cl_mem), &test_buffer2);
 	if (err < 0) {
 		perror("Couldn't set a kernel argument");
 		getchar();
@@ -208,22 +177,10 @@ int main() {
 		exit(1);
 	}
 
-
-	/* Read and print the result */
-	err = clEnqueueReadBuffer(queue, test_buffer2, CL_TRUE, 0,
-		sizeof(test2), &test2, 0, NULL, NULL);
-	if (err < 0) {
-		perror("Couldn't read the buffer");
-		getchar();
-		exit(1);
+	for (int j = 0; j < 6; j++) {
+		cout << test[j];
 	}
-
-	for (int j = 0; j < 4; j++) {
-		for (int k = 0; k < 4; k++) {
-			cout << test[(j * 4) + k] << " " << test2[(j*4)+k] << '\t';
-		}
-		cout << endl;
-	}
+	cout << endl;
 
 	/* Wait for a key press before exiting */
 
