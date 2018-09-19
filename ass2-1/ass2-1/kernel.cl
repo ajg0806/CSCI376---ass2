@@ -1,4 +1,4 @@
- __kernel void mask_test(__global *array1, __global *array2, __global int *output) {
+__kernel void mask_test(__global *array1, __global *array2, __global int *output) {
    /* Execute the first example */
 
    int8 v = vload8(0, array1);
