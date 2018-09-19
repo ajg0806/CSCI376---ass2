@@ -33,8 +33,8 @@ __kernel void password_check(__global int *output) {
    size_t global_id_1 = get_global_id(1);
    
    /* Set float data */
-   int a = (int)(global_id_0);
-   int b = (int)(global_id_1);
+   int a = global_id_0;
+   int b = global_id_1;
 
    int8 v = (int8)(a,b, 0, 0, 0, 0, 0, 0);
 
