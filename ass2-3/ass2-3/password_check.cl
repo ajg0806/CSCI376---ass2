@@ -7,15 +7,13 @@ __kernel void password_check(__global int *output) {
    size_t offset_0 = get_global_offset(0);
    size_t offset_1 = get_global_offset(1);
 
-
    /* Determine array index */
    int index_0 = global_id_0 - offset_0;
    int index_1 = global_id_1 - offset_1;
    int index = index_1 * global_size_0 + index_0;
    
    /* Set float data */
-   int f = global_id_0 * 100 + global_id_1 * 1;
-
+   int f = global_id_0*100+global_id_1;
 
    output[index] = f;
 }

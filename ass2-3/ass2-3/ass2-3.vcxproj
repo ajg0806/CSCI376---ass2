@@ -18,6 +18,12 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="password_check.cl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="password_check.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{368AC4C5-E334-46D0-96C4-19C65D634C93}</ProjectGuid>

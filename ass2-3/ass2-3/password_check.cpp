@@ -25,6 +25,7 @@ cl_device_id create_device() {
 	err = clGetPlatformIDs(1, &platform, NULL);
 	if (err < 0) {
 		perror("Couldn't identify a platform");
+		getchar();
 		exit(1);
 	}
 
@@ -35,6 +36,7 @@ cl_device_id create_device() {
 	}
 	if (err < 0) {
 		perror("Couldn't access any devices");
+		getchar();
 		exit(1);
 	}
 
@@ -54,6 +56,7 @@ cl_program build_program(cl_context ctx, cl_device_id dev, const char* filename)
 	program_handle = fopen(filename, "r");
 	if (program_handle == NULL) {
 		perror("Couldn't find the program file");
+		getchar();
 		exit(1);
 	}
 	fseek(program_handle, 0, SEEK_END);
@@ -69,6 +72,7 @@ cl_program build_program(cl_context ctx, cl_device_id dev, const char* filename)
 		(const char**)&program_buffer, &program_size, &err);
 	if (err < 0) {
 		perror("Couldn't create the program");
+		getchar();
 		exit(1);
 	}
 	free(program_buffer);
@@ -86,6 +90,7 @@ cl_program build_program(cl_context ctx, cl_device_id dev, const char* filename)
 			log_size + 1, program_log, NULL);
 		printf("%s\n", program_log);
 		free(program_log);
+		getchar();
 		exit(1);
 	}
 
@@ -115,6 +120,7 @@ int main() {
 	context = clCreateContext(NULL, 1, &device, NULL, NULL, &err);
 	if (err < 0) {
 		perror("Couldn't create a context");
+		getchar();
 		exit(1);
 	}
 
@@ -123,6 +129,7 @@ int main() {
 	kernel = clCreateKernel(program, KERNEL_FUNC, &err);
 	if (err < 0) {
 		perror("Couldn't create a kernel");
+		getchar();
 		exit(1);
 	};
 
@@ -131,6 +138,7 @@ int main() {
 		sizeof(test), NULL, &err);
 	if (err < 0) {
 		perror("Couldn't create a buffer");
+		getchar();
 		exit(1);
 	};
 
@@ -138,6 +146,7 @@ int main() {
 	err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &test_buffer);
 	if (err < 0) {
 		perror("Couldn't set a kernel argument");
+		getchar();
 		exit(1);
 	};
 
@@ -145,6 +154,7 @@ int main() {
 	queue = clCreateCommandQueue(context, device, 0, &err);
 	if (err < 0) {
 		perror("Couldn't create a command queue");
+		getchar();
 		exit(1);
 	};
 
@@ -153,6 +163,7 @@ int main() {
 		global_size, local_size, 0, NULL, NULL);
 	if (err < 0) {
 		perror("Couldn't enqueue the kernel");
+		getchar();
 		exit(1);
 	}
 
@@ -161,23 +172,19 @@ int main() {
 		sizeof(test), &test, 0, NULL, NULL);
 	if (err < 0) {
 		perror("Couldn't read the buffer");
+		getchar();
 		exit(1);
 	}
 
-	/*
-	for(i=0; i<4; i+=4) {
-	printf("%.2f     %.2f     %.2f     %.2f\n",
-	test[i], test[i+1], test[i+2], test[i+3]);
-	}*/
-
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			cout << test[(i * 4) + j] << '\t';
+	for (int j = 0; j < 4; j++) {
+		for (int k = 0; k < 4; k++) {
+			cout << test[(j * 4) + k] << '\t';
 		}
 		cout << endl;
 	}
 
 	/* Wait for a key press before exiting */
+
 	getchar();
 
 	/* Deallocate resources */
