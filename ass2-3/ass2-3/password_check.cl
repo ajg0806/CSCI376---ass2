@@ -14,6 +14,8 @@ __kernel void password_check(__global int *output) {
    int index = index_1 * global_size_0 + index_0;
    
    /* Set float data */
-   int f = global_id_0 * 10 + global_id_1 * 1;
+   int f = global_id_0 * 100 + global_id_1 * 1;
+
+
    output[index] = f;
 }
