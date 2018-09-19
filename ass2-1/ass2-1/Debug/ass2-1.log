@@ -1,1 +1,4 @@
-﻿  ass2-1.vcxproj -> C:\Users\grabs\Google Drive\2018\Spring\CSCI376\Assignments\Assignment 2 - 376\CSCI376---ass2\ass2-1\Debug\ass2-1.exe
+﻿  main.cpp
+c:\users\grabs\google drive\2018\spring\csci376\assignments\assignment 2 - 376\csci376---ass2\ass2-1\ass2-1\main.cpp(97): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  LINK : C:\Users\grabs\Google Drive\2018\Spring\CSCI376\Assignments\Assignment 2 - 376\CSCI376---ass2\ass2-1\Debug\ass2-1.exe not found or not built by the last incremental link; performing full link
+  ass2-1.vcxproj -> C:\Users\grabs\Google Drive\2018\Spring\CSCI376\Assignments\Assignment 2 - 376\CSCI376---ass2\ass2-1\Debug\ass2-1.exe
