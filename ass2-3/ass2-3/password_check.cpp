@@ -109,13 +109,39 @@ int main() {
 	cl_int i, err;
 
 	/* Data and buffers */
-	size_t dim = 2;
-	size_t global_offset[] = { 0, 0 };
-	size_t global_size[] = { 4, 4 };
-	size_t local_size[] = { 2, 2 };
-	int test[8];
-	cl_mem test_buffer;
+	size_t dim = 3;
+	size_t global_offset[] = { 0, 0, 0 };
+	size_t global_size[] = { 26, 26, 26 };
+	size_t local_size[] = { 2, 2, 2};
 
+	char password[3];
+	int test[4];
+	cl_mem test_buffer, password_buffer;
+
+	char c;
+	bool valid = false;
+	do {
+		cout << "Please enter a 3 letter password: ";
+		for (int i = 0; i < 3; i++) {
+			cin >> c;
+
+			if (c >= 'a' && c <= 'z') {
+				c = c - ('a' - 'A');
+				valid = true;
+				password[i] = c;
+			}
+			else if (c >= 'A' && c <= 'Z')
+			{
+				valid = true;
+				password[i] = c;
+			}
+			else {
+				valid = false;
+				i += 50;
+			}
+		}
+		cin.ignore(100, '\n');
+	} while (!valid);
 	/* Create a device and context */
 	device = create_device();
 	context = clCreateContext(NULL, 1, &device, NULL, NULL, &err);
@@ -142,9 +168,17 @@ int main() {
 		getchar();
 		exit(1);
 	};
+	password_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+		sizeof(password), password, &err);
 
 	/* Create kernel argument */
 	err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &test_buffer);
+	if (err < 0) {
+		perror("Couldn't set a kernel argument");
+		getchar();
+		exit(1);
+	};
+	err = clSetKernelArg(kernel, 1, sizeof(cl_mem), &password_buffer);
 	if (err < 0) {
 		perror("Couldn't set a kernel argument");
 		getchar();
@@ -177,8 +211,9 @@ int main() {
 		exit(1);
 	}
 
-	for (int j = 0; j < 6; j++) {
-		cout << test[j];
+	cout << "The password you entered was: ";
+	for (int j = 0; j < 3; j++) {
+		cout << (char)(test[j]+'A');
 	}
 	cout << endl;
 
@@ -188,6 +223,7 @@ int main() {
 
 	/* Deallocate resources */
 	clReleaseMemObject(test_buffer);
+	clReleaseMemObject(password_buffer);
 	clReleaseKernel(kernel);
 	clReleaseCommandQueue(queue);
 	clReleaseProgram(program);
