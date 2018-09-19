@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iostream>
+using namespace std;
 
 #ifdef MAC
 #include <OpenCL/cl.h>
@@ -102,10 +104,10 @@ int main() {
 
    /* Data and buffers */
    size_t dim = 2;
-   size_t global_offset[] = {1, 1};
-   size_t global_size[] = {2, 2};
-   size_t local_size[] = {1, 2};
-   float test[24];      
+   size_t global_offset[] = {0, 0};
+   size_t global_size[] = {4, 4};
+   size_t local_size[] = {2, 2};
+   char test[24];      
    cl_mem test_buffer;
 
    /* Create a device and context */
@@ -162,9 +164,17 @@ int main() {
       exit(1);   
    }
 
-   for(i=0; i<24; i+=6) {
-      printf("%.2f     %.2f     %.2f     %.2f     %.2f     %.2f\n", 
-         test[i], test[i+1], test[i+2], test[i+3], test[i+4], test[i+5]);
+   /*
+   for(i=0; i<4; i+=4) {
+      printf("%.2f     %.2f     %.2f     %.2f\n", 
+         test[i], test[i+1], test[i+2], test[i+3]);
+   }*/
+
+   for (int i = 0; i < 4; i++) {
+	   for (int j = 0; j < 4; j++) {
+		   cout << test[(i*4)+j] << '\t';
+	   }
+	   cout << endl;
    }
 
    /* Wait for a key press before exiting */
