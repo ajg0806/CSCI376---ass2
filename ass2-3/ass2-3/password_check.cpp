@@ -102,9 +102,9 @@ int main() {
 
    /* Data and buffers */
    size_t dim = 2;
-   size_t global_offset[] = {3, 5};
-   size_t global_size[] = {6, 4};
-   size_t local_size[] = {3, 2};
+   size_t global_offset[] = {1, 1};
+   size_t global_size[] = {2, 2};
+   size_t local_size[] = {1, 2};
    float test[24];      
    cl_mem test_buffer;
 

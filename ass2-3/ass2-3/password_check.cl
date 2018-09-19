@@ -16,7 +16,6 @@ __kernel void password_check(__global float *output) {
    
    /* Set float data */
    float f = global_id_0 * 10.0f + global_id_1 * 1.0f;
-   f += local_id_0 * 0.1f + local_id_1 * 0.01f;
 
    output[index] = f;
 }
