@@ -107,7 +107,7 @@ int main() {
    size_t global_offset[] = {0, 0};
    size_t global_size[] = {4, 4};
    size_t local_size[] = {2, 2};
-   char test[24];      
+   int test[24];      
    cl_mem test_buffer;
 
    /* Create a device and context */

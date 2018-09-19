@@ -1,4 +1,4 @@
-__kernel void password_check(__global char *output) { 
+__kernel void password_check(__global int *output) { 
 
    /* Access work-item/work-group information */
    size_t global_id_0 = get_global_id(0);
@@ -14,8 +14,6 @@ __kernel void password_check(__global char *output) {
    int index = index_1 * global_size_0 + index_0;
    
    /* Set float data */
-   char f = (char)((global_id_0 * 10 + global_id_1 * 1)+'A');
-
-
+   int f = global_id_0 * 10 + global_id_1 * 1;
    output[index] = f;
 }
